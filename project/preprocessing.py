@@ -149,18 +149,6 @@ def Xy(df_,target):
     return X,y
 
 
-def is_binary(df_, nums):
-    df = df_.copy()
-    variables = []
-    for var in nums:
-        flag = True
-        unique = df_[var].unique()
-        for value in unique:
-            if value not in [0, 1, np.nan, 0.0, 1.0]:
-                flag = False
-        if flag == True:
-            variables.append(var)
-    return variables
 
 def standardize_X_test(X_train, X_test):
     X_test_ = X_test.copy()
