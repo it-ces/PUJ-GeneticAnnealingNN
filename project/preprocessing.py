@@ -1,5 +1,6 @@
 # Preprocessing module
 import pandas as pd
+import re
 import numpy as np
 from scipy import stats
 from sklearn.preprocessing import OneHotEncoder
@@ -61,24 +62,52 @@ def ratios(df_,):
     return df
 
 
-def breakdown_vars(df):
+def is_binary(df, var):
+    def binary(candidate):
+        return bool(re.match(r"\b[01]\b", candidate))  # 1.0 ?? 
+    # if the percent of binaries is higher than threshold then 
+    # classify as binary
+    # .count() count only no-null values.
+    percent = df[var].apply(lambda x: binary(str(x))).sum() / df[var].count()
+    if percent == 1:
+        return True
+    else:
+        return False
+        
+    
+def binary_df(df):
+    binaries = []
+    for var in  df.columns:
+        if is_binary(df, var):
+            binaries.append(var)
+    return binaries
+
+
+def breakdown_vars(df, off_binary=False):
     """
     This function allow us categorize accodign to numerical or not
     """
+    binaries = binary_df(df)
     categorial = []
     nonormal = []
     normal = []
     for t in df.columns:
-        if df[t].dtypes=="object" or df[t].dtypes.name=='category':
+        if off_binary == False:
+          if (df[t].dtypes.name=="object" or df[t].dtypes.name=='category') and  t not in binaries:
             categorial.append(t)
-        if df[t].dtypes=="int64" or df[t].dtypes=="float64":
+        else:
+           if (df[t].dtypes.name=="object" or df[t].dtypes.name=='category'):
+            categorial.append(t)
+        if (df[t].dtypes=="int64" or df[t].dtypes=="float64") and t not in binaries:
                 n,p = stats.shapiro(df[t])
                 if p<0.05:
                     nonormal.append(t)
-                else: 
+                else:
                     normal.append(t)
-    return categorial, nonormal, normal
-
+    if off_binary == False:
+      return categorial, binaries, nonormal, normal
+    else:
+      return categorial, nonormal, normal
 
 
 def dummies_ohe(df_,cats):
