@@ -134,7 +134,7 @@ def is_binary(df_, nums):
 
 def standardize_X_test(X_train, X_test):
     X_test_ = X_test.copy()
-    cats, nonormal, normal  = breakdown_vars(X_train)
+    cats, binaries, nonormal, normal  = breakdown_vars(X_train)
     locations_scales = {}
     for var in normal + nonormal:
         locations_scales[var] = [X_train[var].mean(), X_train[var].std()]
