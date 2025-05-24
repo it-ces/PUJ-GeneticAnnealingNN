@@ -132,7 +132,7 @@ def std_z(nums, df_, event=None):
     standardizing nums(numerical) variables
     """
     df = df_.copy()
-    binaries = is_binary(df, nums)
+    binaries = binary_df(df)
     for col in nums:
         if col not in binaries:
             df[col] = (df[col] - df[col].mean())/df[col].std()
