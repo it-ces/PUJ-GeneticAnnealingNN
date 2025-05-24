@@ -131,3 +131,14 @@ def is_binary(df_, nums):
         if flag == True:
             variables.append(var)
     return variables
+
+def standardize_X_test(X_train, X_test):
+    X_test_ = X_test.copy()
+    cats, binaries, nonormal, normal  = breakdown_vars(X_train)
+    locations_scales = {}
+    for var in normal + nonormal:
+        locations_scales[var] = [X_train[var].mean(), X_train[var].std()]
+    for var in locations_scales:
+        print(var)
+        X_test_[var] = (X_test_[var] - locations_scales[var][0])/locations_scales[var][1]
+    return X_test_
