@@ -63,7 +63,7 @@ def ratios(df_,):
 
 
 def binary(candidate):
-        return bool(re.match(r"^[01]$", candidate))  # 1.0 ?? 
+        return bool(re.match(r"^[01].?[01]?$", candidate))  # 1.0 ?? 
 
 def is_binary(df, var):
     # if the percent of binaries is higher than threshold then 
